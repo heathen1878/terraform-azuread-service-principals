@@ -1,2 +1,5 @@
-# terraform-azuread-service-principals
-Managed Service Principals in AAD
+# AAD Service Principal module
+
+Creates AAD app registrations, associated service principal, and client secrets.
+
+
