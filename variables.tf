@@ -82,10 +82,9 @@ variable "fallback_public_client_enabled" {
 
 variable "group_membership_claims" {
   description = "Groups claims token"
-  default     = null
-  # default = [
-  #   "None"
-  # ]
+  default = [
+    "None"
+  ]
   type = list(string)
   validation {
     condition = anytrue([
