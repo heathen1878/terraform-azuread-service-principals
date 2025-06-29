@@ -128,7 +128,8 @@ variable "marketing_url" {
 
 variable "notes" {
   description = "Service Principal notes"
-  default     = null
+  default     = "Created by Terraform Module: terraform-azuread-service-principals. 
+  Has automated secret rotation; by default every 180 days."
   type        = string
 }
 
