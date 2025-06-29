@@ -8,3 +8,10 @@ output "service_principal" {
   }
   sensitive = true
 }
+
+output "time" {
+  value = {
+    1 = time_rotating.initial_secret
+    2 = time_rotating.overlapping_secret
+  }
+}
