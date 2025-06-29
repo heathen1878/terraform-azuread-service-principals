@@ -108,7 +108,7 @@ resource "azuread_application" "this" {
 }
 
 resource "azuread_service_principal" "app_registrations" {
-  application_id = azuread_application.this.application_id
+  client_id = azuread_application.this.application_id
 
   description = var.description
   owners      = var.owners
@@ -131,7 +131,7 @@ resource "azuread_service_principal_delegated_permission_grant" "this" {
 }
 
 resource "azuread_application_password" "initial_secret" {
-  application_object_id = azuread_application.this.object_id
+  application_id = azuread_application.this.object_id
 
   display_name      = "tf-generated"
   end_date_relative = format("%sh", var.expire_secret_after * 24)
@@ -141,7 +141,7 @@ resource "azuread_application_password" "initial_secret" {
 }
 
 resource "azuread_application_password" "overlapping_secret" {
-  application_object_id = azuread_application.this.object_id
+  application_id = azuread_application.this.object_id
 
   display_name      = "tf-generated"
   end_date_relative = format("%sh", (var.expire_secret_after + 45) * 24)
