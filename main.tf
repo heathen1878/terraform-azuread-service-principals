@@ -20,7 +20,7 @@ resource "azuread_application" "this" {
   terms_of_service_url           = var.terms_of_service_url
 
   dynamic "api" {
-    for_each = var.apis
+    for_each = var.api
 
     content {
       known_client_applications      = api.value.known_client_applications
