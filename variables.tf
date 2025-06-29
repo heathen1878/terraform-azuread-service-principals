@@ -18,10 +18,10 @@ variable "delegated_admin_approvals" {
   ))
 }
 
-variable "apis" {
+variable "api" {
   description = "A map of API configuration"
-  default     = {}
-  type = map(object(
+  default     = null
+  type = object(
     {
       known_client_applications = optional(list(string), [])
       mapped_claims_enabled     = optional(bool, false)
@@ -36,10 +36,10 @@ variable "apis" {
           user_consent_display_name  = optional(string)
           value                      = optional(string, "default")
         }
-      )))
+      )), {})
       requested_access_token_version = optional(number, 1)
     }
-  ))
+  )
 }
 
 variable "app_roles" {
@@ -59,13 +59,13 @@ variable "app_roles" {
 
 variable "description" {
   description = "Service Principals description"
-  default     = ""
+  default     = null
   type        = string
 }
 
 variable "device_only_auth_enabled" {
   description = "Should device only auth be enabled?"
-  default     = false
+  default     = null
   type        = bool
 }
 
@@ -76,15 +76,16 @@ variable "display_name" {
 
 variable "fallback_public_client_enabled" {
   description = "Is the application a public client?"
-  default     = false
+  default     = null
   type        = bool
 }
 
 variable "group_membership_claims" {
   description = "Groups claims token"
-  default = [
-    "None"
-  ]
+  default     = null
+  # default = [
+  #   "None"
+  # ]
   type = list(string)
   validation {
     condition = anytrue([
@@ -103,37 +104,38 @@ variable "group_membership_claims" {
 
 variable "identifier_uris" {
   description = "A set of user defined URI(s) that uniquely identify a Web application within its Azure AD tenant, or within a verified custom domain if the application is multi-tenant."
-  default     = []
-  type        = list(string)
+  default     = null
+  #default     = []
+  type = list(string)
 }
 
 variable "logo_image" {
   description = "A base64 encoded string of the logo...gif. jpeg or png."
-  default     = ""
+  default     = null
   type        = string
 }
 
 variable "logout_url" {
   description = "The applications logout url"
-  default     = ""
+  default     = null
   type        = string
 }
 
 variable "marketing_url" {
   description = "The applications marketing url"
-  default     = ""
+  default     = null
   type        = string
 }
 
 variable "notes" {
   description = "Service Principal notes"
-  default     = ""
+  default     = null
   type        = string
 }
 
 variable "oauth2_post_response_required" {
   description = "Allow POST requests as part of the OAuth 2.0 token request?"
-  default     = false
+  default     = null
   type        = bool
 }
 
@@ -162,7 +164,7 @@ variable "prevent_duplicate_names" {
 
 variable "privacy_statement_url" {
   description = "The applications privacy statement url"
-  default     = ""
+  default     = null
   type        = string
 }
 
@@ -201,16 +203,16 @@ variable "sign_in_audience" {
 }
 
 variable "single_page_application" {
-  description = "A map of single page application configuration"
-  default     = {}
-  type = map(object({
+  description = "An object of single page application configuration"
+  default     = null
+  type = object({
     redirect_uris = optional(list(string), [])
-  }))
+  })
 }
 
 variable "support_url" {
   description = "The applications support url"
-  default     = ""
+  default     = null
   type        = string
 }
 
@@ -222,7 +224,7 @@ variable "template_id" {
 
 variable "terms_of_service_url" {
   description = "The applications terms of service url"
-  default     = ""
+  default     = null
   type        = string
 }
 
@@ -238,20 +240,20 @@ variable "rotate_secret_days_before_expiry" {
   type        = number
 }
 
-variable "webs" {
+variable "web" {
   description = "A map of web configuration"
-  default     = {}
-  type = map(object(
+  default     = null
+  type = object(
     {
       homepage_url  = optional(string)
       logout_url    = optional(string)
       redirect_uris = optional(list(string), [])
-      implicit_grants = optional(map(object(
+      implicit_grants = optional(object(
         {
           access_token_issuance_enabled = optional(bool, null)
           id_token_issuance_enabled     = optional(bool, null)
         }
-      )))
+      ), null)
     }
-  ))
+  )
 }

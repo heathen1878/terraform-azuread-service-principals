@@ -76,7 +76,7 @@ resource "azuread_application" "this" {
   }
 
   dynamic "single_page_application" {
-    for_each = var.single_page_application
+    for_each = var.single_page_application != null ? [var.single_page_application] : []
 
     content {
       redirect_uris = single_page_application.value.redirect_uris
@@ -84,14 +84,15 @@ resource "azuread_application" "this" {
   }
 
   dynamic "web" {
-    for_each = var.webs
+    for_each = var.web != null ? [var.web] : []
 
     content {
       homepage_url  = web.value.homepage_url
       logout_url    = web.value.logout_url
       redirect_uris = web.value.redirect_uris
+
       dynamic "implicit_grant" {
-        for_each = web.value.implicit_grants
+        for_each = web.value.implicit_grants != null ? [web.value.implicit_grants] : []
 
         content {
           access_token_issuance_enabled = implicit_grant.value.access_token_issuance_enabled
