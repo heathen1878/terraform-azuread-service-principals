@@ -108,7 +108,7 @@ resource "azuread_application" "this" {
 }
 
 resource "azuread_service_principal" "app_registrations" {
-  client_id = azuread_application.this.application_id
+  client_id = azuread_application.this.client_id
 
   description = var.description
   owners      = var.owners
