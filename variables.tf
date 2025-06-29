@@ -217,7 +217,7 @@ variable "support_url" {
 
 variable "template_id" {
   description = "A unique id for a templated application in the Azure App Gallery"
-  default     = ""
+  default     = null
   type        = string
 }
 
