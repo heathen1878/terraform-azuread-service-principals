@@ -186,7 +186,7 @@ variable "required_resource_access" {
 
 variable "sign_in_audience" {
   description = "The sign in audience"
-  default     = ""
+  default     = "AzureADMyOrg"
   type        = string
   validation {
     condition = contains(
