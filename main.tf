@@ -11,7 +11,10 @@ resource "azuread_application" "this" {
   marketing_url                  = var.marketing_url
   notes                          = var.notes
   oauth2_post_response_required  = var.oauth2_post_response_required
-  owners                         = var.owners
+  owners                         = concat(
+    var.owners,
+    data.azuread_client_config.this.object_id
+  )
   prevent_duplicate_names        = var.prevent_duplicate_names
   privacy_statement_url          = var.privacy_statement_url
   sign_in_audience               = var.sign_in_audience

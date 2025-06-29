@@ -129,9 +129,9 @@ variable "marketing_url" {
 variable "notes" {
   description = "Notes"
   default     = <<EOF
-  Created by Terraform Module: terraform-azuread-service-principals.
+Created by Terraform Module: terraform-azuread-service-principals.
 
-  Has automated secret rotation; by default every 180 days.
+Has automated secret rotation; by default every 180 days.
   EOF
   type        = string
 }
