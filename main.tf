@@ -13,7 +13,7 @@ resource "azuread_application" "this" {
   oauth2_post_response_required  = var.oauth2_post_response_required
   owners                         = concat(
     var.owners,
-    data.azuread_client_config.this.object_id
+    [data.azuread_client_config.this.object_id]
   )
   prevent_duplicate_names        = var.prevent_duplicate_names
   privacy_statement_url          = var.privacy_statement_url
