@@ -153,7 +153,7 @@ resource "azuread_application_password" "overlapping_secret" {
 resource "azuread_application_pre_authorized" "this" {
   for_each = var.preauthorisation
 
-  application_object_id = azuread_application.this.object_id
-  authorized_app_id     = each.value.app_id
-  permission_ids        = each.value.permission_ids
+  application_id       = azuread_application.this.object_id
+  authorized_client_id = each.value.client_id
+  permission_ids       = each.value.permission_ids
 }

@@ -148,7 +148,7 @@ variable "preauthorisation" {
   default     = {}
   type = map(object(
     {
-      app_id         = string
+      client_id      = string
       permission_ids = list(string)
     }
   ))
