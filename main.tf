@@ -11,16 +11,19 @@ resource "azuread_application" "this" {
   marketing_url                  = var.marketing_url
   notes                          = var.notes
   oauth2_post_response_required  = var.oauth2_post_response_required
-  owners                         = var.owners
-  prevent_duplicate_names        = var.prevent_duplicate_names
-  privacy_statement_url          = var.privacy_statement_url
-  sign_in_audience               = var.sign_in_audience
-  support_url                    = var.support_url
-  template_id                    = var.template_id
-  terms_of_service_url           = var.terms_of_service_url
+  owners = concat(
+    var.owners,
+    [data.azuread_client_config.this.object_id]
+  )
+  prevent_duplicate_names = var.prevent_duplicate_names
+  privacy_statement_url   = var.privacy_statement_url
+  sign_in_audience        = var.sign_in_audience
+  support_url             = var.support_url
+  template_id             = var.template_id
+  terms_of_service_url    = var.terms_of_service_url
 
   dynamic "api" {
-    for_each = var.apis
+    for_each = var.api != null ? [var.api] : []
 
     content {
       known_client_applications      = api.value.known_client_applications
@@ -76,7 +79,7 @@ resource "azuread_application" "this" {
   }
 
   dynamic "single_page_application" {
-    for_each = var.single_page_application
+    for_each = var.single_page_application != null ? [var.single_page_application] : []
 
     content {
       redirect_uris = single_page_application.value.redirect_uris
@@ -84,14 +87,15 @@ resource "azuread_application" "this" {
   }
 
   dynamic "web" {
-    for_each = var.webs
+    for_each = var.web != null ? [var.web] : []
 
     content {
       homepage_url  = web.value.homepage_url
       logout_url    = web.value.logout_url
       redirect_uris = web.value.redirect_uris
+
       dynamic "implicit_grant" {
-        for_each = web.value.implicit_grants
+        for_each = web.value.implicit_grants != null ? [web.value.implicit_grants] : []
 
         content {
           access_token_issuance_enabled = implicit_grant.value.access_token_issuance_enabled
@@ -107,44 +111,49 @@ resource "azuread_application" "this" {
   }
 }
 
-resource "azuread_service_principal" "app_registrations" {
-  application_id = azuread_application.this.application_id
+resource "azuread_service_principal" "this" {
+  client_id = azuread_application.this.client_id
 
   description = var.description
   owners      = var.owners
+}
+
+resource "azuread_service_principal" "msgraph" {
+  client_id    = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
+  use_existing = true
 }
 
 resource "azuread_app_role_assignment" "this" {
   for_each = var.admin_approvals
 
   app_role_id         = azuread_service_principal.msgraph.app_role_ids[each.value.role_id]
-  principal_object_id = azuread_service_principal.app_registrations.object_id
+  principal_object_id = azuread_service_principal.this.object_id
   resource_object_id  = azuread_service_principal.msgraph.object_id
 }
 
 resource "azuread_service_principal_delegated_permission_grant" "this" {
   for_each = var.delegated_admin_approvals
 
-  service_principal_object_id          = azuread_service_principal.app_registrations.object_id
+  service_principal_object_id          = azuread_service_principal.this.object_id
   resource_service_principal_object_id = azuread_service_principal.msgraph.object_id
   claim_values                         = each.value.claim_values
 }
 
 resource "azuread_application_password" "initial_secret" {
-  application_object_id = azuread_application.this.object_id
+  application_id = azuread_application.this.id
 
-  display_name      = "tf-generated"
-  end_date_relative = format("%sh", var.expire_secret_after * 24)
+  display_name = "tf-generated"
+  end_date     = timeadd(time_rotating.initial_secret.rfc3339, format("%sh", var.expire_secret_after * 24))
   rotate_when_changed = {
     rotation = time_rotating.initial_secret.id
   }
 }
 
 resource "azuread_application_password" "overlapping_secret" {
-  application_object_id = azuread_application.this.object_id
+  application_id = azuread_application.this.id
 
-  display_name      = "tf-generated"
-  end_date_relative = format("%sh", (var.expire_secret_after + 45) * 24)
+  display_name = "tf-generated"
+  end_date     = timeadd(time_rotating.overlapping_secret.rfc3339, format("%sh", (var.expire_secret_after + 45) * 24))
   rotate_when_changed = {
     rotation = time_rotating.overlapping_secret.id
   }
@@ -153,7 +162,7 @@ resource "azuread_application_password" "overlapping_secret" {
 resource "azuread_application_pre_authorized" "this" {
   for_each = var.preauthorisation
 
-  application_object_id = azuread_application.this.object_id
-  authorized_app_id     = each.value.app_id
-  permission_ids        = each.value.permission_ids
+  application_id       = azuread_application.this.object_id
+  authorized_client_id = each.value.client_id
+  permission_ids       = each.value.permission_ids
 }

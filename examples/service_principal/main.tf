@@ -1,7 +1,6 @@
 module "service_principal" {
 
-    source = "../.."
+  source = "../.."
 
-    display_name = "SP-TF"
-
+  display_name = "SP-MOD-EXAMPLE-TF"
 }
