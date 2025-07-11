@@ -114,12 +114,6 @@ variable "logo_image" {
   type        = string
 }
 
-variable "logout_url" {
-  description = "The applications logout url"
-  default     = null
-  type        = string
-}
-
 variable "marketing_url" {
   description = "The applications marketing url"
   default     = null
@@ -169,12 +163,6 @@ variable "privacy_statement_url" {
   description = "The applications privacy statement url"
   default     = null
   type        = string
-}
-
-variable "redirect_uris" {
-  description = "A set of urls where user tokens are sent for signin"
-  default     = []
-  type        = list(string)
 }
 
 variable "required_resource_access" {
